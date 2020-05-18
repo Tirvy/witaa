@@ -17,6 +17,10 @@ public class Bullet : MonoBehaviour {
 	void OnTriggerEnter2D (	Collider2D hitInfo)
 	{
 		Creature enemy = hitInfo.GetComponent<Creature>();
+		if (enemy == null) {
+			enemy = hitInfo.transform.parent.GetComponent<Creature>();
+		}
+		
 		if (enemy != null)
 		{
 			enemy.TakeDamage(damage);

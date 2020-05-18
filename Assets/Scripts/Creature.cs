@@ -5,16 +5,27 @@ using UnityEngine;
 public class Creature : MonoBehaviour
 {
 	
+	[Tooltip("Initial Max Health")]
 	public int maxHealth = 60;
+	
+    [Range(0.1f, 5f)]
+	[Tooltip("Speed of death animation")]
 	public float deathSpeed = 1;
+	
+	[Tooltip("Body with Sprite and Collider")]
+	public GameObject creatureBody;
+	
+	[Tooltip("Body with Sprite and Collider")]
+	private float deathProgress = 0;
+	
+	
 	private Material material;
-	public float deathProgress = 0;
 	private int health;
     // Start is called before the first frame update
     void Start()
     {
         health = maxHealth;
-		material = GetComponent<SpriteRenderer>().material;
+		material = creatureBody.GetComponent<SpriteRenderer>().material;
     }
 
     // Update is called once per frame
