@@ -5,10 +5,13 @@ using Pathfinding;
 
 public class CreatureAI : MonoBehaviour
 {
+	private PixelCrown.CharacterMovement2D movementController;
+
 	public Transform target;
 	
-	public float speed;
 	public float nextWaypointDistance = 3f;
+	public float minVerticalDistance = 1f;
+	public float minHorizontalDistance = 1f;
 	
 	Path path;
 	int currentWaypoint = 0;
@@ -20,10 +23,11 @@ public class CreatureAI : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+		movementController = GetComponent<PixelCrown.CharacterMovement2D>();
         seeker = GetComponent<Seeker>();
 		rb = GetComponent<Rigidbody2D>();
 		
-		InvokeRepeating("UpdatePath", 0f, 1f);
+		InvokeRepeating("UpdatePath", 0f, 0.5f);
     }
 	
 	void UpdatePath()
@@ -44,6 +48,7 @@ public class CreatureAI : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+
 		if (path != null) 
 		{
 			if (currentWaypoint >= path.vectorPath.Count)
@@ -56,9 +61,15 @@ public class CreatureAI : MonoBehaviour
 			}
 			
 			Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
-			Vector2 force = new Vector2(direction.x * speed * Time.deltaTime, 0f);
-			
-			rb.AddForce(force);
+			if (movementController != null) {
+				float horizontalMovement = 0;
+				if (Mathf.Abs(direction.x) >= minHorizontalDistance)
+					horizontalMovement = Mathf.Sign(direction.x);
+
+				bool jumping = direction.y > minVerticalDistance;
+
+				movementController.Move(horizontalMovement, false, jumping, false);
+			}
 			
 			float distance = Vector2.Distance(rb.position, path.vectorPath[currentWaypoint]);
 			

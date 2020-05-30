@@ -17,6 +17,8 @@ public class Creature : MonoBehaviour
 	
 	[Tooltip("Body with Sprite and Collider")]
 	private float deathProgress = 0;
+
+	public Healthbar healthbar;
 	
 	
 	private Material material;
@@ -25,6 +27,10 @@ public class Creature : MonoBehaviour
     void Start()
     {
         health = maxHealth;
+		if (healthbar != null)
+		{
+			healthbar.SetMaxHealth(maxHealth);
+		}
 		material = creatureBody.GetComponent<SpriteRenderer>().material;
     }
 
@@ -45,8 +51,14 @@ public class Creature : MonoBehaviour
 	public void TakeDamage(int damage)
 	{
 		health -= damage;
+		if (healthbar != null)
+		{
+			healthbar.SetHealth(health);
+		}
+
 		if (health <= 0) 
 		{
+			healthbar.Hide();
 		}
 	}
 }
