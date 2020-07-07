@@ -12,6 +12,7 @@ public class CreatureAI : MonoBehaviour
 	public float nextWaypointDistance = 3f;
 	public float minVerticalDistance = 1f;
 	public float minHorizontalDistance = 1f;
+	public float minTanToJump = 3f;
 	
 	Path path;
 	int currentWaypoint = 0;
@@ -60,13 +61,18 @@ public class CreatureAI : MonoBehaviour
 				inMotion = true;
 			}
 			
-			Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position).normalized;
+			Vector2 direction = ((Vector2)path.vectorPath[currentWaypoint] - rb.position);
 			if (movementController != null) {
 				float horizontalMovement = 0;
 				if (Mathf.Abs(direction.x) >= minHorizontalDistance)
 					horizontalMovement = Mathf.Sign(direction.x);
 
-				bool jumping = direction.y > minVerticalDistance;
+				float directionTan = minTanToJump;
+				bool jumping = false;
+				if (direction.x > 0) { 
+					directionTan = direction.y / direction.x;
+				}
+				jumping = directionTan >= minTanToJump && direction.y > minVerticalDistance;
 
 				movementController.Move(horizontalMovement, false, jumping, false);
 			}
