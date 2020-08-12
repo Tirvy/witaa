@@ -5,9 +5,10 @@ using UnityEngine;
 public class Bullet : MonoBehaviour {
 
 	public float speed = 20f;
-	public int damage = 20;
+	public float damage = 20f;
 	public Rigidbody2D rb;
 	public GameObject impactEffect;
+	public float projectileMass = 0.1f; 
 
 	// Use this for initialization
 	void Start () {
@@ -23,7 +24,9 @@ public class Bullet : MonoBehaviour {
 		
 		if (enemy != null)
 		{
-			enemy.TakeDamage(damage);
+			Vector3 hitOffset = transform.position - hitInfo.transform.position;
+			Debug.Log(hitOffset);
+			enemy.TakeDamage(new DamageSource(damage, "plasma", transform.position, rb.velocity * projectileMass));
 		}
 
 		Instantiate(impactEffect, transform.position, transform.rotation);

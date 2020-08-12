@@ -6,7 +6,7 @@ public class Creature : MonoBehaviour
 {
 	
 	[Tooltip("Initial Max Health")]
-	public int maxHealth = 60;
+	public float maxHealth = 60f;
 	
     [Range(0.1f, 5f)]
 	[Tooltip("Speed of death animation")]
@@ -18,14 +18,18 @@ public class Creature : MonoBehaviour
 	[Tooltip("Body with Sprite and Collider")]
 	private float deathProgress = 0;
 
+	[Tooltip("Healthbar ref")]
 	public Healthbar healthbar;
 	
 	
 	private Material material;
-	private int health;
+	private float health;
+	private List<Vector2> frameHitPushes = new List<Vector2>();
+	private Rigidbody2D rb;
     // Start is called before the first frame update
     void Start()
     {
+		rb = GetComponent<Rigidbody2D>();
         health = maxHealth;
 		if (healthbar != null)
 		{
@@ -47,8 +51,24 @@ public class Creature : MonoBehaviour
 		}
         
     }
+
+	private void FixedUpdate() {
+		applyHitPushes();
+	}
 	
-	public void TakeDamage(int damage)
+	private void applyHitPushes() {
+		if (frameHitPushes.Count > 0) {
+			Vector2 pushSum = Vector2.zero;
+			frameHitPushes.ForEach(delegate(Vector2 push)
+			{
+				pushSum += push;
+			});
+			rb.AddForce(pushSum * 10);
+			frameHitPushes.Clear();
+		}
+	}
+
+	private void ApplyDamage(float damage)
 	{
 		health -= damage;
 		if (healthbar != null)
@@ -60,5 +80,18 @@ public class Creature : MonoBehaviour
 		{
 			healthbar.Hide();
 		}
+	}
+
+	private void ApplyHit(Vector3 position, Vector2 impulse) {
+		material.SetVector("_DamageSource", position);
+		frameHitPushes.Add(impulse);
+		// ObjectPooler.Instance.SpawnFromPool("Hitmark", transform.position + position);
+		ObjectPooler.Instance.SpawnFromPool("Hitmark", position);
+	}
+	
+	public void TakeDamage(DamageSource damageSource)
+	{
+		ApplyDamage(damageSource.power);
+		ApplyHit(damageSource.position, damageSource.impulse);
 	}
 }

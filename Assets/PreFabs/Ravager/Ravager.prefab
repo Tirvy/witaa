@@ -91,9 +91,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 357ab349319d42141ba565898998fef2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxHealth: 60
+  maxHealth: 125
   deathSpeed: 1
   creatureBody: {fileID: 6673438578683728650}
+  healthbar: {fileID: 0}
 --- !u!50 &6673438580135033466
 Rigidbody2D:
   serializedVersion: 4
@@ -128,8 +129,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 0}
-  speed: 1000
   nextWaypointDistance: 3
+  minVerticalDistance: 1
+  minHorizontalDistance: 1
+  minTanToJump: 3
 --- !u!1001 &3477516142564657503
 PrefabInstance:
   m_ObjectHideFlags: 0
