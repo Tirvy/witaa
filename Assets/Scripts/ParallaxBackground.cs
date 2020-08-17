@@ -6,34 +6,41 @@ using UnityEngine;
 
 public class ParallaxBackground : MonoBehaviour {
 
-    private float length, startpos;
+    private Vector2 bounds;
+    private Vector3 startPos, cameraStartPos;
 	
     public GameObject playerCamera;
-    public float parallaxEffect;
+    public float parallaxEffectX;
+    public float parallaxEffectY;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        startpos = transform.position.x;
-        length = GetComponent<SpriteRenderer>().bounds.size.x;
+        startPos = transform.position;
+        cameraStartPos = playerCamera.transform.position;
+        bounds = GetComponent<SpriteRenderer>().bounds.size;
     }
 
     // Update is called once per frame
     void Update()
     {
-        float temp = (playerCamera.transform.position.x * (1 - parallaxEffect));
-        float dist = (playerCamera.transform.position.x * parallaxEffect);
+        Vector2 cameraOffset = playerCamera.transform.position - cameraStartPos; 
+        Vector2 dist = new Vector2(cameraOffset.x * parallaxEffectX,
+                                   cameraOffset.y * parallaxEffectY);
 
-        transform.position = new Vector3(startpos + dist, transform.position.y, transform.position.z);
+        transform.position = new Vector3(startPos.x + dist.x, 
+                                         startPos.y + dist.y, 
+                                         transform.position.z);
 
-        if (temp > startpos + length)
+        float tempX = (playerCamera.transform.position.x * (1 - parallaxEffectX));
+        if (tempX > startPos.x + bounds.x)
         {
-            startpos += length;
+            startPos.x += bounds.x;
         }
-        else if (temp < startpos - length)
+        else if (tempX < startPos.x - bounds.x)
         {
-            startpos -= length;
+            startPos.x -= bounds.x;
         }
     }
 }

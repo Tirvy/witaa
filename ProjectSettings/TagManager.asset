@@ -15,7 +15,7 @@ TagManager:
   - 
   - Players
   - Obstacles
-  - 
+  - Background
   - 
   - 
   - 
@@ -38,6 +38,9 @@ TagManager:
   - 
   - 
   m_SortingLayers:
+  - name: FarBackground
+    uniqueID: 1114254549
+    locked: 0
   - name: Background
     uniqueID: 1354398011
     locked: 0
